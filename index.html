@@ -1,12 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>   
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animated Test Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0f172a; /* slate-900 */
+      --bg2:#0b1220;
+      --fg:#e2e8f0; /* slate-200 */
+      --muted:#94a3b8; /* slate-400 */
+      --brand:#7c3aed; /* violet-600 */
+      --brand-2:#22d3ee; /* cyan-400 */
+      --card:#111827; /* gray-900 */
+      --glass: rgba(255,255,255,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    /* Global reset */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--fg); background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      overflow-x: hidden;
+    }
+
+    /* Animated gradient backdrop */
+    body::before{
+      content:""; position:fixed; inset:-20vmax; z-index:-2;
+      background: radial-gradient(35vmax 35vmax at 10% 10%, rgba(124,58,237,.25), transparent 60%),
+                  radial-gradient(40vmax 40vmax at 90% 10%, rgba(34,211,238,.18), transparent 60%),
+                  radial-gradient(45vmax 45vmax at 50% 90%, rgba(16,185,129,.15), transparent 60%);
+      filter: blur(40px) saturate(130%);
+      animation: drift 24s ease-in-out infinite alternate;
+    }
+    @keyframes drift { from{ transform: translateY(-2%) rotate(0deg); } to{ transform: translateY(2%) rotate(6deg); } }
+
+    /* Floating blobs */
+    .blob{ position:absolute; border-radius:50%; filter: blur(28px); opacity:.25; mix-blend: screen; animation: float 12s ease-in-out infinite; }
+    .blob.one{ width:380px; height:380px; background: #7c3aed; top:-60px; left:-80px; animation-duration: 18s; }
+    .blob.two{ width:320px; height:320px; background: #22d3ee; top:30vh; right:-100px; animation-duration: 22s; }
+    .blob.three{ width:260px; height:260px; background: #34d399; bottom:-80px; left:10vw; animation-duration: 26s; }
+    @keyframes float{ 0%{ transform: translateY(0) translateX(0) scale(1);} 50%{ transform: translateY(-20px) translateX(10px) scale(1.05);} 100%{ transform: translateY(0) translateX(0) scale(1);} }
+
+    /* Container */
+    .wrap{ width:min(1100px, 92%); margin-inline:auto; }
+
+    /* Navbar */
+    .nav{ position:sticky; top:0; backdrop-filter: blur(12px); background: linear-gradient(180deg, rgba(12,18,32,.75), rgba(12,18,32,.35)); border-bottom: 1px solid rgba(255,255,255,.08); z-index:10; }
+    .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px; }
+    .brand-badge{ width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: var(--shadow); animation: pulse 2.6s ease-in-out infinite; }
+    @keyframes pulse{ 0%{ transform: scale(1);} 50%{ transform: scale(1.06);} 100%{ transform: scale(1);} }
+    .nav a{ color:var(--fg); text-decoration:none; margin-left:18px; position:relative; font-weight:600; }
+    .nav a::after{ content:""; position:absolute; left:0; bottom:-6px; width:0; height:2px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); transition: width .25s ease; }
+    .nav a:hover::after{ width:100%; }
+
+    /* Hero */
+    .hero{ position:relative; padding: clamp(64px, 10vw, 140px) 0 72px; text-align:center; }
+    .eyebrow{ display:inline-block; padding:6px 12px; border-radius:999px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); font-size:12px; letter-spacing:.2px; color: var(--muted); }
+    .title{ font-family: Manrope, Inter; font-weight: 800; line-height:1.05; font-size: clamp(34px, 7.2vw, 68px); margin:16px 0 14px; letter-spacing:-.02em; background: linear-gradient(92deg, #fff, #dbeafe 40%, #a78bfa 60%, #67e8f9); -webkit-background-clip:text; background-clip:text; color: transparent; animation: sheen 3.5s linear infinite; }
+    @keyframes sheen{ 0%{ filter: drop-shadow(0 0 0 rgba(255,255,255,0)); } 50%{ filter: drop-shadow(0 2px 14px rgba(124,58,237,.25)); } 100%{ filter: drop-shadow(0 0 0 rgba(255,255,255,0)); } }
+    .subtitle{ color: var(--muted); font-size: clamp(14px, 2.5vw, 18px); max-width: 720px; margin:0 auto 24px; }
+    .cta{ display:inline-flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+    .btn{ position:relative; display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius: 14px; border:1px solid rgba(255,255,255,.1); background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); color:#fff; font-weight:700; letter-spacing:.2px; text-decoration:none; box-shadow: var(--shadow); overflow:hidden; transition: transform .18s ease, box-shadow .18s ease; }
+    .btn::before{ content:""; position:absolute; inset:-2px; border-radius: 14px; background: linear-gradient(90deg, rgba(124,58,237,.7), rgba(34,211,238,.7)); opacity:.0; transition: opacity .25s; z-index:-1; }
+    .btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 40px rgba(124,58,237,.25); }
+    .btn:hover::before{ opacity:.25; }
+    .btn.primary{ background: linear-gradient(135deg, var(--brand), var(--brand-2)); border-color: transparent; }
+
+    /* Feature cards */
+    .section{ padding: 64px 0; }
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:18px; }
+    .card{ grid-column: span 4; background: var(--glass); border:1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding:22px; box-shadow: var(--shadow); transition: transform .25s ease, background .25s ease, border-color .25s ease; position:relative; overflow:hidden; }
+    .card:hover{ transform: translateY(-6px) scale(1.01); background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2); }
+    .card h3{ margin:0 0 8px; font-weight:800; letter-spacing:.2px; }
+    .card p{ margin:0; color: var(--muted); }
+    .card .shine{ position:absolute; inset:0; background: radial-gradient(600px 150px at var(--x,50%) -20%, rgba(255,255,255,.18), transparent 60%); opacity:0; transition: opacity .25s; pointer-events:none; }
+    .card:hover .shine{ opacity:1; }
+
+    /* Marquee */
+    .marquee{ overflow:hidden; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); }
+    .marquee-track{ display:flex; gap:46px; padding:14px 0; animation: scroll 28s linear infinite; }
+    .pill{ padding:8px 14px; border-radius:999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); font-weight:600; white-space:nowrap; }
+    @keyframes scroll{ from{ transform: translateX(0);} to{ transform: translateX(-50%);} }
+
+    /* Testimonials slider (CSS only) */
+    .slider{ position:relative; overflow:hidden; border-radius: var(--radius); border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); }
+    .slides{ display:flex; width:300%; animation: slides 18s ease-in-out infinite; }
+    .slide{ width:100%; padding:28px; display:flex; flex-direction:column; gap:10px; }
+    .slide p{ color:var(--fg); opacity:.9; }
+    .slide small{ color: var(--muted); }
+    @keyframes slides{ 0%, 20%{ transform: translateX(0);} 33%, 53%{ transform: translateX(-33.333%);} 66%, 86%{ transform: translateX(-66.666%);} 100%{ transform: translateX(0);} }
+
+    /* FAQ (no JS) */
+    details{ background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); padding:14px 18px; border-radius:12px; transition: background .2s; }
+    details + details{ margin-top:12px; }
+    details[open]{ background: rgba(255,255,255,.08); }
+    summary{ font-weight:700; cursor:pointer; list-style:none; }
+    summary::-webkit-details-marker{ display:none; }
+
+    /* Footer */
+    .footer{ border-top:1px solid rgba(255,255,255,.08); padding:22px 0; color: var(--muted); text-align:center; }
+
+    /* Responsive */
+    @media (max-width: 1024px){ .card{ grid-column: span 6; } }
+    @media (max-width: 640px){
+      .nav a{ margin-left:12px; font-size:14px; }
+      .grid{ grid-template-columns: repeat(6, 1fr); }
+      .card{ grid-column: 1 / -1; }
+      .slides{ animation-duration: 14s; }
+      .hero{ padding-top: 84px; }
+    }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello Words</h1>
-    
+  <!-- Floating ambient shapes -->
+  <div class="blob one" aria-hidden="true"></div>
+  <div class="blob two" aria-hidden="true"></div>
+  <div class="blob three" aria-hidden="true"></div>
+
+  <!-- Navbar -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand"><span class="brand-badge" aria-hidden="true"></span> Animated Demo</div>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="wrap hero">
+    <span class="eyebrow">Pure HTML + CSS • Mobile Responsive</span>
+    <h1 class="title">A Fully Animated Landing Page</h1>
+    <p class="subtitle">Use this page to stress‑test animations, layout, and responsiveness. No JavaScript required. Built with accessible semantics and reduced‑motion support.</p>
+    <div class="cta">
+      <a class="btn primary" href="#features">Explore Features</a>
+      <a class="btn" href="#faq">Read FAQs</a>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <section class="marquee" aria-label="animated marquee">
+    <div class="wrap marquee-track">
+      <span class="pill">Responsive Grid</span>
+      <span class="pill">Animated Gradient</span>
+      <span class="pill">Hover Shine</span>
+      <span class="pill">Glass Cards</span>
+      <span class="pill">CSS Slider</span>
+      <span class="pill">No JS Needed</span>
+      <span class="pill">Accessible</span>
+      <span class="pill">Modern UI</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="pill">Responsive Grid</span>
+      <span class="pill">Animated Gradient</span>
+      <span class="pill">Hover Shine</span>
+      <span class="pill">Glass Cards</span>
+      <span class="pill">CSS Slider</span>
+      <span class="pill">No JS Needed</span>
+      <span class="pill">Accessible</span>
+      <span class="pill">Modern UI</span>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="wrap section">
+    <div class="grid">
+      <article class="card">
+        <div class="shine"></div>
+        <h3>Animated Cards</h3>
+        <p>Smooth hover lift, gradient sheen, and subtle glass effect for delight.</p>
+      </article>
+      <article class="card">
+        <div class="shine"></div>
+        <h3>Gradient Title</h3>
+        <p>Eye‑catching animated gradient heading with soft glow pulse.</p>
+      </article>
+      <article class="card">
+        <div class="shine"></div>
+        <h3>Ambient Blobs</h3>
+        <p>Floating colorful blobs add depth without JavaScript.</p>
+      </article>
+      <article class="card">
+        <div class="shine"></div>
+        <h3>Marquee Row</h3>
+        <p>Infinite CSS marquee for showcasing highlights or logos.</p>
+      </article>
+      <article class="card">
+        <div class="shine"></div>
+        <h3>CSS Slider</h3>
+        <p>Testimonials rotate using pure CSS keyframes.</p>
+      </article>
+      <article class="card">
+        <div class="shine"></div>
+        <h3>Mobile‑First</h3>
+        <p>Layout collapses gracefully on small screens.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Testimonials (CSS slider) -->
+  <section id="testimonials" class="wrap section">
+    <div class="slider">
+      <div class="slides">
+        <figure class="slide">
+          <blockquote>
+            <p>“Looks gorgeous and runs butter‑smooth on my phone.”</p>
+          </blockquote>
+          <figcaption><small>— Mobile Tester</small></figcaption>
+        </figure>
+        <figure class="slide">
+          <blockquote>
+            <p>“No JavaScript at all? That’s impressive.”</p>
+          </blockquote>
+          <figcaption><small>— Frontend Lead</small></figcaption>
+        </figure>
+        <figure class="slide">
+          <blockquote>
+            <p>“Great baseline for quick UI experiments.”</p>
+          </blockquote>
+          <figcaption><small>— Product Designer</small></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="wrap section" aria-label="Frequently Asked Questions">
+    <details open>
+      <summary>Is this page mobile responsive?</summary>
+      <div class="content"><p>Yes. It uses a fluid grid, clamp() font sizes, and mobile-first styles.</p></div>
+    </details>
+    <details>
+      <summary>Does it rely on JavaScript?</summary>
+      <div class="content"><p>No. All interactions and animations are pure CSS for easy testing.</p></div>
+    </details>
+    <details>
+      <summary>Can I disable animations?</summary>
+      <div class="content"><p>Users with <code>prefers-reduced-motion</code> will get minimal motion automatically.</p></div>
+    </details>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">Made for testing • Copy and tweak freely ✨</div>
+  </footer>
+
+  <script>
+    // Optional: pointer-based shine on cards (still no external JS libs)
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.addEventListener('pointermove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        card.style.setProperty('--x', x + '%');
+      });
+    });
+  </script>
 </body>
 </html>
